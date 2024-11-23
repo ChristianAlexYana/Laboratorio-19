@@ -6,12 +6,13 @@ package laboratorio.pkg19;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 public class Ejercito {
     String nombre;
     private ArrayList<Soldado> soldados;
 
     public Ejercito(String nombre, int numeroEjercito) {
-        this.nombre = nombre;
+        this.nombre = "Ejército " + numeroEjercito;
         this.soldados = new ArrayList<>();
         generarSoldados(numeroEjercito);
     }
