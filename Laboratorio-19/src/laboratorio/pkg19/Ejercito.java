@@ -7,37 +7,41 @@ package laboratorio.pkg19;
 import java.util.ArrayList;
 import java.util.Random;
 public class Ejercito {
-    
     String nombre;
-    ArrayList<Soldado> soldados;
-    public Ejercito(String nombre) {
+    private ArrayList<Soldado> soldados;
+
+    public Ejercito(String nombre, int numeroEjercito) {
         this.nombre = nombre;
         this.soldados = new ArrayList<>();
-        generarSoldados();
+        generarSoldados(numeroEjercito);
     }
-    private void generarSoldados() {
+
+    private void generarSoldados(int numeroEjercito) {
         Random random = new Random();
-        int cantidadSoldados = random.nextInt(10) + 1;
+        int cantidadSoldados = random.nextInt(10) + 5;
+        int contadorArquero = 1, contadorEspadachin = 1, contadorCaballero = 1;
+
         for (int i = 0; i < cantidadSoldados; i++) {
             int tipoSoldado = random.nextInt(3);
             Soldado soldado;
+
             switch (tipoSoldado) {
-                case 0 : soldado = new Espadachin(nombre + ":E" + (i + 1));break;
-                case 1 :  soldado = new Arquero(nombre + ":A" + (i + 1));break;
-                default : soldado = new Caballero(nombre + ":C" + (i + 1));break;
+                case 0:
+                    soldado = new Espadachin(numeroEjercito + ":E" + contadorEspadachin++);
+                    break;
+                case 1:
+                    soldado = new Arquero(numeroEjercito + ":A" + contadorArquero++);
+                    break;
+                default:
+                    soldado = new Caballero(numeroEjercito + ":C" + contadorCaballero++);
+                    break;
             }
+
             soldados.add(soldado);
         }
     }
+
     public ArrayList<Soldado> getSoldados() {
         return soldados;
     }
-    public double promedioVida() {
-        return soldados.stream().mapToInt(Soldado::getVida).average().orElse(0);
-    }
-
-    public Soldado getSoldadoMayorVida() {
-        return soldados.stream().max((s1, s2) -> Integer.compare(s1.getVida(), s2.getVida())).orElse(null);
-    }
 }
-

@@ -6,8 +6,6 @@ package laboratorio.pkg19;
 
 import java.util.Random;
 
-import java.util.Random;
-
 public class Caballero extends Soldado {
     private String arma;
     private boolean montado;
