@@ -5,12 +5,10 @@
 package laboratorio.pkg19;
 
 public class Laboratorio19 {
-
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        // TODO code application logic here
+        Ejercito ejercitoA = new Ejercito("Ejército Águila", 1);
+        Ejercito ejercitoB = new Ejercito("Ejército León", 2);
+        Batalla batalla = new Batalla(ejercitoA, ejercitoB);
+        batalla.iniciarJuego();
     }
-    
 }
