@@ -4,10 +4,6 @@
  */
 package laboratorio.pkg19;
 
-/**
- *
- * @author Gustavo
- */
 public class Laboratorio19 {
 
     /**

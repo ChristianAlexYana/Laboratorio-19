@@ -4,10 +4,20 @@
  */
 package laboratorio.pkg19;
 
-/**
- *
- * @author Gustavo
- */
-public class Arquero {
-    
+import java.util.Random;
+public class Arquero extends Soldado {
+   private int flechas;
+
+    public Arquero(String nombre) {
+        super(nombre, new Random().nextInt(3) + 1); 
+        this.flechas = new Random().nextInt(10) + 10; 
+    }
+    public int getFlechas() {
+        return flechas;
+    }
+    public void dispararFlecha() {
+        if (flechas > 0) {
+            flechas--;  
+        }
+    }
 }

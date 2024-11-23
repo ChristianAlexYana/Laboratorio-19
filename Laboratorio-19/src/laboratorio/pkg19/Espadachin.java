@@ -4,10 +4,17 @@
  */
 package laboratorio.pkg19;
 
-/**
- *
- * @author Gustavo
- */
-public class Espadachin {
+import java.util.Random;
+public class Espadachin extends Soldado {
     
+    private int longitudEspada;
+    public Espadachin(String nombre) {
+        super(nombre, new Random().nextInt(2) + 3);
+        this.longitudEspada = new Random().nextInt(3) + 1;
+    }
+    public int getLongitudEspada() {
+        return longitudEspada;
+    }
+    public void crearMuroEscudos() {
+    }
 }
