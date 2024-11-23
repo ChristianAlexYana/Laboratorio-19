@@ -3,135 +3,181 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package laboratorio.pkg19;
+
 import java.util.Random;
+import java.util.Scanner;
+
 public class Batalla {
-    Ejercito ejercitoA;
-    Ejercito ejercitoB;
-    public Batalla(Ejercito ejercitoA, Ejercito ejercitoB){
+    private Ejercito ejercitoA;
+    private Ejercito ejercitoB;
+    private String[][] tablero = new String[10][10];
+    private Scanner scanner = new Scanner(System.in);
+
+    public Batalla(Ejercito ejercitoA, Ejercito ejercitoB) {
         this.ejercitoA = ejercitoA;
-        this.ejercitoB = ejercitoB;       
+        this.ejercitoB = ejercitoB;
+        inicializarTablero();
+        posicionarSoldados(ejercitoA);
+        posicionarSoldados(ejercitoB);
     }
-    public void mostrarResumenBatalla() {
-        mostrarTablero();
-        mostrarDatosSoldados();
-        mostrarMayorVida();
-        mostrarPromedioVida();
-        mostrarOrdenadosPorCreacion();
-        mostrarOrdenadosPorVida();
-        determinarGanador();
-    }
-    public void mostrarTablero() {
-    String[][] tablero = new String[10][10];
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
-            tablero[i][j] = "__";
+
+    private void inicializarTablero() {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                tablero[i][j] = "__";
+            }
         }
     }
-    Random random = new Random();
-    for (Soldado soldado : ejercitoA.getSoldados()) {
-        int x, y;
-        do {
-            x = random.nextInt(10);
-            y = random.nextInt(10);
-        } while (!tablero[x][y].equals("__"));
-        tablero[x][y] = soldado.getNombre();
+
+    private void posicionarSoldados(Ejercito ejercito) {
+        Random random = new Random();
+        for (Soldado soldado : ejercito.getSoldados()) {
+            int x, y;
+            do {
+                x = random.nextInt(10) + 1;
+                y = random.nextInt(10) + 1;
+            } while (!tablero[x - 1][y - 1].equals("__"));
+            tablero[x - 1][y - 1] = soldado.getNombre();
+            soldado.setPosicion(x, y);
+        }
     }
-    for (Soldado soldado : ejercitoB.getSoldados()) {
-        int x, y;
-        do {
-            x = random.nextInt(10);
-            y = random.nextInt(10);
-        } while (!tablero[x][y].equals("__"));
-        tablero[x][y] = soldado.getNombre();
+
+    public void iniciarJuego() {
+        boolean turnoA = true;
+        while (!ejercitoA.getSoldados().isEmpty() && !ejercitoB.getSoldados().isEmpty()) {
+            mostrarTablero();
+            if (turnoA) {
+                System.out.println("\nTurno de " + ejercitoA.nombre);
+                jugarTurno(ejercitoA, ejercitoB);
+            } else {
+                System.out.println("\nTurno de " + ejercitoB.nombre);
+                jugarTurno(ejercitoB, ejercitoA);
+            }
+            turnoA = !turnoA;
+        }
+        determinarGanador();
     }
-    System.out.println("\nTablero:");
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
-            System.out.printf("%-8s", tablero[i][j]);
+
+    private void jugarTurno(Ejercito ejercitoActual, Ejercito ejercitoEnemigo) {
+        while (true) {
+            System.out.println("Ingrese las coordenadas del soldado a mover (fila columna, de 1 a 10):");
+            int fila = scanner.nextInt();
+            int columna = scanner.nextInt();
+            if (esSoldadoPropio(ejercitoActual, fila, columna)) {
+                System.out.println("Ingrese la dirección de movimiento (arriba, abajo, izquierda, derecha):");
+                String direccion = scanner.next();
+                if (moverSoldado(ejercitoActual, ejercitoEnemigo, fila, columna, direccion)) {
+                    break;
+                }
+            } else {
+                System.out.println("Posición inválida. Intente de nuevo.");
+            }
+        }
+    }
+
+    private boolean esSoldadoPropio(Ejercito ejercito, int fila, int columna) {
+        return ejercito.getSoldados().stream()
+                .anyMatch(s -> s.getPosX() == fila && s.getPosY() == columna);
+    }
+
+    private boolean moverSoldado(Ejercito ejercitoActual, Ejercito ejercitoEnemigo, int fila, int columna, String direccion) {
+        Soldado soldado = ejercitoActual.getSoldados().stream()
+                .filter(s -> s.getPosX() == fila && s.getPosY() == columna)
+                .findFirst()
+                .orElse(null);
+
+        if (soldado == null) return false;
+
+        int nuevoX = fila, nuevoY = columna;
+        switch (direccion.toLowerCase()) {
+            case "arriba": nuevoX--; break;
+            case "abajo": nuevoX++; break;
+            case "izquierda": nuevoY--; break;
+            case "derecha": nuevoY++; break;
+            default: System.out.println("Dirección inválida."); return false;
+        }
+
+        if (nuevoX < 1 || nuevoX > 10 || nuevoY < 1 || nuevoY > 10) {
+            System.out.println("Movimiento fuera de los límites. Intente de nuevo.");
+            return false;
+        }
+
+        if (!tablero[nuevoX - 1][nuevoY - 1].equals("__")) {
+            Soldado enemigo = buscarSoldadoEnemigo(ejercitoEnemigo, nuevoX, nuevoY);
+            if (enemigo != null) {
+                resolverBatalla(soldado, enemigo, ejercitoEnemigo);
+            } else {
+                System.out.println("Posición ocupada por un aliado. Intente de nuevo.");
+                return false;
+            }
+        } else {
+            tablero[fila - 1][columna - 1] = "__";
+            tablero[nuevoX - 1][nuevoY - 1] = soldado.getNombre();
+            soldado.setPosicion(nuevoX, nuevoY);
+        }
+        return true;
+    }
+
+    private Soldado buscarSoldadoEnemigo(Ejercito ejercito, int fila, int columna) {
+        return ejercito.getSoldados().stream()
+                .filter(s -> s.getPosX() == fila && s.getPosY() == columna)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private void resolverBatalla(Soldado atacante, Soldado defensor, Ejercito ejercitoEnemigo) {
+        int vidaTotal = atacante.getVida() + defensor.getVida();
+        double probAtacante = atacante.getVida() * 1.0 / vidaTotal;
+
+        System.out.printf("Batalla entre %s y %s\n", atacante.getNombre(), defensor.getNombre());
+        System.out.printf("Probabilidades - %s: %.2f%%, %s: %.2f%%\n",
+            atacante.getNombre(), probAtacante * 100, defensor.getNombre(), (1 - probAtacante) * 100);
+
+        if (Math.random() < probAtacante) {
+            System.out.println(atacante.getNombre() + " gana la batalla.");
+            atacante.incrementarVida();
+            eliminarSoldado(ejercitoEnemigo, defensor);
+        } else {
+            System.out.println(defensor.getNombre() + " gana la batalla.");
+            defensor.incrementarVida();
+            eliminarSoldado(ejercitoA, atacante);
+        }
+    }
+
+private void eliminarSoldado(Ejercito ejercito, Soldado soldado) {
+    ejercito.getSoldados().removeIf(s -> s.getNombre().equals(soldado.getNombre()));
+}
+
+    private void determinarGanador() {
+        if (ejercitoA.getSoldados().isEmpty()) {
+            System.out.println("¡" + ejercitoB.nombre + " gana la batalla!");
+        } else {
+            System.out.println("¡" + ejercitoA.nombre + " gana la batalla!");
+        }
+    }
+
+    private void mostrarTablero() {
+        System.out.println("\nEstado del tablero:");
+        int anchoFijo = 6;
+        String formato = "%-" + anchoFijo + "s";
+
+        System.out.print("    ");
+        for (int col = 1; col <= 10; col++) {
+            System.out.printf(formato, col);
+        }
+        System.out.println();
+
+        for (int i = 0; i < 10; i++) {
+            System.out.printf("%-4d", i + 1);
+            for (int j = 0; j < 10; j++) {
+                if (tablero[i][j].equals("__")) {
+                    System.out.printf(formato, "______");
+                } else {
+                    System.out.printf(formato, tablero[i][j]);
+                }
+            }
+            System.out.println();
         }
         System.out.println();
     }
-    System.out.println();
-}    
-    public void mostrarDatosSoldados() {
-        System.out.println("Datos de Ejercito " + ejercitoA.nombre);
-        mostrarSoldadosPorTipo(ejercitoA);
-        System.out.println("\nDatos de Ejercito " + ejercitoB.nombre);
-        mostrarSoldadosPorTipo(ejercitoB);
-    }
-    private void mostrarSoldadosPorTipo(Ejercito ejercito) {
-        for (Soldado s : ejercito.getSoldados()) {
-            if (s instanceof Espadachin) {
-                System.out.println("Espadachin: " + s.getNombre() + " Vida: " + s.getVida());
-            }
-        }
-        for (Soldado s : ejercito.getSoldados()) {
-            if (s instanceof Arquero) {
-                System.out.println("Arquero: " + s.getNombre() + " Vida: " + s.getVida());
-            }
-        }
-        for (Soldado s : ejercito.getSoldados()) {
-            if (s instanceof Caballero) {
-                System.out.println("Caballero: " + s.getNombre() + " Vida: " + s.getVida());
-            }
-        }
-    }
-    private void mostrarMayorVida() {
-        Soldado mayorVidaA = obtenerMayorVida(ejercitoA);
-        Soldado mayorVidaB = obtenerMayorVida(ejercitoB);
-
-        System.out.println("\nSoldado con mayor vida de Ejercito A: " + mayorVidaA.getNombre() + " Vida: " + mayorVidaA.getVida());
-        System.out.println("Soldado con mayor vida de Ejercito B: " + mayorVidaB.getNombre() + " Vida: " + mayorVidaB.getVida());
-    }
-    private Soldado obtenerMayorVida(Ejercito ejercito) {
-        Soldado mayor = ejercito.getSoldados().get(0);
-        for (Soldado s : ejercito.getSoldados()) {
-            if (s.getVida() > mayor.getVida()) {
-                mayor = s;
-            }
-        }
-        return mayor;
-    }
-    private void mostrarPromedioVida() {
-        System.out.printf("\nPromedio de vida de Ejercito A: %.2f\n", ejercitoA.promedioVida());
-        System.out.printf("Promedio de vida de Ejercito B: %.2f\n", ejercitoB.promedioVida());
-    }
-    private void mostrarOrdenadosPorCreacion() {
-        System.out.println("\nOrden de creacion Ejercito A:");
-        for (Soldado s : ejercitoA.getSoldados()) {
-            System.out.println(s.getNombre() + " Vida: " + s.getVida());
-        }
-        System.out.println("Orden de creacion Ejercito B:");
-        for (Soldado s : ejercitoB.getSoldados()) {
-            System.out.println(s.getNombre() + " Vida: " + s.getVida());
-        }
-    }
-    private void mostrarOrdenadosPorVida() {
-        System.out.println("\nSoldados de Ejercito A ordenados por vida:");
-        ordenarPorVida(ejercitoA);
-        for (Soldado s : ejercitoA.getSoldados()) {
-            System.out.println(s.getNombre() + " Vida: " + s.getVida());
-        }        
-        System.out.println("Soldados de Ejercito B ordenados por vida:");
-        ordenarPorVida(ejercitoB);
-        for (Soldado s : ejercitoB.getSoldados()) {
-            System.out.println(s.getNombre() + " Vida: " + s.getVida());
-        }
-    }
-    private void ordenarPorVida(Ejercito ejercito) {
-        for (int i = 0; i < ejercito.getSoldados().size() - 1; i++) {
-            for (int j = 0; j < ejercito.getSoldados().size() - i - 1; j++) {
-                if (ejercito.getSoldados().get(j).getVida() < ejercito.getSoldados().get(j + 1).getVida()) {
-                    Soldado temp = ejercito.getSoldados().get(j);
-                    ejercito.getSoldados().set(j, ejercito.getSoldados().get(j + 1));
-                    ejercito.getSoldados().set(j + 1, temp);
-                }
-            }
-        }
-    }
-    private void determinarGanador() {
-        String ganador = ejercitoA.promedioVida() > ejercitoB.promedioVida() ? ejercitoA.nombre : ejercitoB.nombre;
-        System.out.println("\nEl ganador de la batalla es: " + ganador);
-    }
 }
-
