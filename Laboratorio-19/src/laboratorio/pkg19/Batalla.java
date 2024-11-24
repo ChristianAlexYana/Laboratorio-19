@@ -144,10 +144,16 @@ public class Batalla {
         if (Math.random() < probAtacante) {
             System.out.println(atacante.getNombre() + " gana la batalla.");
             atacante.incrementarVida();
+            tablero[defensor.getPosX() - 1][defensor.getPosY() - 1] = "__";
+            tablero[atacante.getPosX() - 1][atacante.getPosY() - 1] = "__";
+            atacante.setPosicion(defensor.getPosX(), defensor.getPosY());
+            tablero[atacante.getPosX() - 1][atacante.getPosY() - 1] = atacante.getNombre();
             eliminarSoldado(ejercitoEnemigo, defensor);
+
         } else {
             System.out.println(defensor.getNombre() + " gana la batalla.");
             defensor.incrementarVida();
+            tablero[atacante.getPosX() - 1][atacante.getPosY() - 1] = "__";
             eliminarSoldado(ejercitoA, atacante);
         }
     }
