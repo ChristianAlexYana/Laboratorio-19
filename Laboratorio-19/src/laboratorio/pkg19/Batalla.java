@@ -131,7 +131,7 @@ public class Batalla {
 
         System.out.printf("Batalla entre %s y %s\n", atacante.getNombre(), defensor.getNombre());
         System.out.printf("Probabilidades - %s: %.2f%%, %s: %.2f%%\n",
-            atacante.getNombre(), probAtacante * 100, defensor.getNombre(), (1 - probAtacante) * 100);
+                atacante.getNombre(), probAtacante * 100, defensor.getNombre(), (1 - probAtacante) * 100);
 
         if (Math.random() < probAtacante) {
             System.out.println(atacante.getNombre() + " gana la batalla.");
@@ -144,9 +144,9 @@ public class Batalla {
         }
     }
 
-private void eliminarSoldado(Ejercito ejercito, Soldado soldado) {
-    ejercito.getSoldados().removeIf(s -> s.getNombre().equals(soldado.getNombre()));
-}
+    private void eliminarSoldado(Ejercito ejercito, Soldado soldado) {
+        ejercito.getSoldados().removeIf(s -> s.getNombre().equals(soldado.getNombre()));
+    }
 
     private void determinarGanador() {
         if (ejercitoA.getSoldados().isEmpty()) {
@@ -157,27 +157,29 @@ private void eliminarSoldado(Ejercito ejercito, Soldado soldado) {
     }
 
     private void mostrarTablero() {
-        System.out.println("\nEstado del tablero:");
-        int anchoFijo = 6;
-        String formato = "%-" + anchoFijo + "s";
+    System.out.println("\nEstado del tablero:");
+    int anchoFijo = 8; // Ancho fijo uniforme para todas las casillas
+    String formato = "%-" + anchoFijo + "s";
 
-        System.out.print("    ");
-        for (int col = 1; col <= 10; col++) {
-            System.out.printf(formato, col);
-        }
-        System.out.println();
+    // Imprimir encabezados de columnas (1 a 10)
+    System.out.print("    ");
+    for (int col = 1; col <= 10; col++) {
+        System.out.printf(formato, col);
+    }
+    System.out.println();
 
-        for (int i = 0; i < 10; i++) {
-            System.out.printf("%-4d", i + 1);
-            for (int j = 0; j < 10; j++) {
-                if (tablero[i][j].equals("__")) {
-                    System.out.printf(formato, "______");
-                } else {
-                    System.out.printf(formato, tablero[i][j]);
-                }
+    // Imprimir filas con su índice y contenido
+    for (int i = 0; i < 10; i++) {
+        System.out.printf("%-4d", i + 1);
+        for (int j = 0; j < 10; j++) {
+            if (tablero[i][j].equals("__")) {
+                System.out.printf(formato, "_______"); // Casillas vacías uniformes
+            } else {
+                System.out.printf(formato, tablero[i][j]); // Nombres de soldados con el mismo ancho
             }
-            System.out.println();
         }
         System.out.println();
     }
+    System.out.println();
+}
 }

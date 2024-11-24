@@ -6,9 +6,9 @@ package laboratorio.pkg19;
 
 public class Laboratorio19 {
     public static void main(String[] args) {
-        Ejercito ejercitoA = new Ejercito("Ejército Águila", 1);
-        Ejercito ejercitoB = new Ejercito("Ejército León", 2);
-        Batalla batalla = new Batalla(ejercitoA, ejercitoB);
+        Ejercito ejercito1 = new Ejercito("Ejército 1", 1);
+        Ejercito ejercito2 = new Ejercito("Ejército 2", 2);
+        Batalla batalla = new Batalla(ejercito1, ejercito2);
         batalla.iniciarJuego();
     }
 }
