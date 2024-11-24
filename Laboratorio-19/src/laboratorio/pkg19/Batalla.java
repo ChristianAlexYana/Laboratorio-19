@@ -6,7 +6,6 @@ package laboratorio.pkg19;
 
 import java.util.Random;
 import java.util.Scanner;
-
 public class Batalla {
     private Ejercito ejercitoA;
     private Ejercito ejercitoB;
@@ -60,9 +59,16 @@ public class Batalla {
 
     private void jugarTurno(Ejercito ejercitoActual, Ejercito ejercitoEnemigo) {
         while (true) {
-            System.out.println("Ingrese las coordenadas del soldado a mover (fila columna, de 1 a 10):");
+            System.out.println("Ingrese la fila del soldado a mover (de 1 a 10):");
             int fila = scanner.nextInt();
+            System.out.println("Ingrese la columna del soldado a mover (de 1 a 10):");
             int columna = scanner.nextInt();
+
+            if (fila < 1 || fila > 10 || columna < 1 || columna > 10) {
+                System.out.println("Posición fuera de rango. Intente de nuevo.");
+                continue;
+            }
+
             if (esSoldadoPropio(ejercitoActual, fila, columna)) {
                 System.out.println("Ingrese la dirección de movimiento (arriba, abajo, izquierda, derecha):");
                 String direccion = scanner.next();
@@ -94,7 +100,9 @@ public class Batalla {
             case "abajo": nuevoX++; break;
             case "izquierda": nuevoY--; break;
             case "derecha": nuevoY++; break;
-            default: System.out.println("Dirección inválida."); return false;
+            default:
+                System.out.println("Dirección inválida. Intente de nuevo.");
+                return false;
         }
 
         if (nuevoX < 1 || nuevoX > 10 || nuevoY < 1 || nuevoY > 10) {
@@ -157,29 +165,27 @@ public class Batalla {
     }
 
     private void mostrarTablero() {
-    System.out.println("\nEstado del tablero:");
-    int anchoFijo = 8; // Ancho fijo uniforme para todas las casillas
-    String formato = "%-" + anchoFijo + "s";
+        System.out.println("\nEstado del tablero:");
+        int anchoFijo = 6;
+        String formato = "%-" + anchoFijo + "s";
 
-    // Imprimir encabezados de columnas (1 a 10)
-    System.out.print("    ");
-    for (int col = 1; col <= 10; col++) {
-        System.out.printf(formato, col);
-    }
-    System.out.println();
+        System.out.print("    ");
+        for (int col = 1; col <= 10; col++) {
+            System.out.printf(formato, col);
+        }
+        System.out.println();
 
-    // Imprimir filas con su índice y contenido
-    for (int i = 0; i < 10; i++) {
-        System.out.printf("%-4d", i + 1);
-        for (int j = 0; j < 10; j++) {
-            if (tablero[i][j].equals("__")) {
-                System.out.printf(formato, "_______"); // Casillas vacías uniformes
-            } else {
-                System.out.printf(formato, tablero[i][j]); // Nombres de soldados con el mismo ancho
+        for (int i = 0; i < 10; i++) {
+            System.out.printf("%-4d", i + 1);
+            for (int j = 0; j < 10; j++) {
+                if (tablero[i][j].equals("__")) {
+                    System.out.printf(formato, "_____");
+                } else {
+                    System.out.printf(formato, tablero[i][j]);
+                }
             }
+            System.out.println();
         }
         System.out.println();
     }
-    System.out.println();
-}
 }
