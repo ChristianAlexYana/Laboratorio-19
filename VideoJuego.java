@@ -78,7 +78,7 @@ class Caballero extends Soldado {
     public String toString() {
         return super.toString() + ", Arma: " + armaActual + ", Montado: " + montado;
     }
-}
+} 
 class Ejercito {
     private ArrayList<Soldado> soldados;
     private String nombreEjercito;
@@ -130,3 +130,4 @@ class Ejercito {
         return !soldados.isEmpty();
     }
 }
+
