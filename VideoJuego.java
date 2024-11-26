@@ -80,4 +80,56 @@ class Caballero extends Soldado {
         return super.toString() + ", Arma: " + armaActual + ", Montado: " + montado;
     }
 }
->>>>>>> ChristianYana
+>>>>>>> ChristianYana 
+class Ejercito {
+    private ArrayList<Soldado> soldados;
+    private String nombreEjercito;
+    private String[][] tablero;
+
+    public Ejercito(String nombreEjercito, String[][] tablero) {
+        this.nombreEjercito = nombreEjercito;
+        this.soldados = new ArrayList<>();
+        this.tablero = tablero;
+    }
+
+    public void crearSoldado(int tipoSoldado, int i) {
+        Random rand = new Random();
+        String nombre = "";
+        int vida = 0, fila = rand.nextInt(10), columna = rand.nextInt(10);
+        switch (tipoSoldado) {
+            case 0: // Espadachin
+                nombre = "E" + i + "X" + (nombreEjercito.equals("Ejército 1") ? "1" : "2");
+                vida = rand.nextInt(2) + 3;
+                agregarSoldado(new Espadachin(nombre, vida, fila, columna, rand.nextInt(3) + 2));
+                break;
+            case 1: // Arquero
+                nombre = "A" + i + "X" + (nombreEjercito.equals("Ejército 1") ? "1" : "2");
+                vida = rand.nextInt(3) + 1;
+                agregarSoldado(new Arquero(nombre, vida, fila, columna, rand.nextInt(10) + 5));
+                break;
+            case 2: // Caballero
+                nombre = "C" + i + "X" + (nombreEjercito.equals("Ejército 1") ? "1" : "2");
+                vida = rand.nextInt(3) + 3;
+                agregarSoldado(new Caballero(nombre, vida, fila, columna));
+                break;
+        }
+    }
+
+    public void agregarSoldado(Soldado soldado) {
+        soldados.add(soldado);
+        tablero[soldado.getFila()][soldado.getColumna()] = soldado.getNombre();
+    }
+
+    public ArrayList<Soldado> getSoldados() {
+        return soldados;
+    }
+
+    public String getNombreEjercito() {
+        return nombreEjercito;
+    }
+
+    public boolean tieneSoldados() {
+        return !soldados.isEmpty();
+    }
+}
+
