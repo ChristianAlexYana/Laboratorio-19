@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-=======
-=======
 import java.util.*;
 class Soldado {
     private String nombre;
@@ -82,7 +79,7 @@ class Caballero extends Soldado {
         return super.toString() + ", Arma: " + armaActual + ", Montado: " + montado;
     }
 }
->>>>>>> ChristianYana 
+
 class Ejercito {
     private ArrayList<Soldado> soldados;
     private String nombreEjercito;
@@ -134,5 +131,75 @@ class Ejercito {
         return !soldados.isEmpty();
     }
 }
+public class VideoJuego {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Random rand = new Random();
+        boolean seguirJugando = true;
+        while (seguirJugando) {
+            String[][] tablero = new String[10][10];
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    tablero[i][j] = "__";
+                }
+            }
+            Ejercito ejercito1 = new Ejercito("Ejército 1", tablero);
+            Ejercito ejercito2 = new Ejercito("Ejército 2", tablero);
+            for (int i = 0; i < rand.nextInt(10) + 1; i++) {
+                int tipoSoldado = rand.nextInt(3);
+                ejercito1.crearSoldado(tipoSoldado, i);
+            }
+            for (int i = 0; i < rand.nextInt(10) + 1; i++) {
+                int tipoSoldado = rand.nextInt(3);
+                ejercito2.crearSoldado(tipoSoldado, i);
+            }
+            if (!ejercito1.tieneSoldados()) {
+                System.out.println("¡El Ejército 2 ha ganado!");
+            } else if (!ejercito2.tieneSoldados()) {
+                System.out.println("¡El Ejército 1 ha ganado!");
+            }
 
->>>>>>> ee43ebbd30e5c8e11010db9aff5c188ec8ed64ac
+            System.out.print("\n¿Deseas jugar otra vez? (s/n): ");
+            String respuesta = scanner.next();
+            if (respuesta.equalsIgnoreCase("n")) {
+                seguirJugando = false;
+            }
+        }
+    }
+}
+public class VideoJuego {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Random rand = new Random();
+        boolean seguirJugando = true;
+        while (seguirJugando) {
+            String[][] tablero = new String[10][10];
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    tablero[i][j] = "__";
+                }
+            }
+            Ejercito ejercito1 = new Ejercito("Ejército 1", tablero);
+            Ejercito ejercito2 = new Ejercito("Ejército 2", tablero);
+            for (int i = 0; i < rand.nextInt(10) + 1; i++) {
+                int tipoSoldado = rand.nextInt(3);
+                ejercito1.crearSoldado(tipoSoldado, i);
+            }
+            for (int i = 0; i < rand.nextInt(10) + 1; i++) {
+                int tipoSoldado = rand.nextInt(3);
+                ejercito2.crearSoldado(tipoSoldado, i);
+            }
+            if (!ejercito1.tieneSoldados()) {
+                System.out.println("¡El Ejército 2 ha ganado!");
+            } else if (!ejercito2.tieneSoldados()) {
+                System.out.println("¡El Ejército 1 ha ganado!");
+            }
+
+            System.out.print("\n¿Deseas jugar otra vez? (s/n): ");
+            String respuesta = scanner.next();
+            if (respuesta.equalsIgnoreCase("n")) {
+                seguirJugando = false;
+            }
+        }
+    }
+}
